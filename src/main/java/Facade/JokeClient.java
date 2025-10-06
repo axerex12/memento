@@ -3,25 +3,27 @@ package Facade;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import org.json.simple.JSONObject; // add Maven dependency for JSON.simple
 import org.json.simple.parser.JSONParser; // add Maven dependency for JSON.simple
+import org.json.simple.parser.ParseException;
 
 
 public class JokeClient {
     public String getRandomJoke() throws Exception {
-        String jsonResult = getJsonFromApi("https://api.chucknorris.io/jokes/random");
-        return extractJokeFromJson(jsonResult);
+        String jsonResult = fetchJson("https://api.chucknorris.io/jokes/random");
+        return extractAttribute(jsonResult, "value");
     }
 
-    private String getJsonFromApi(String apiUrl) throws Exception {
-        URL url = new URL(apiUrl);
+    public String fetchJson(String urlString) throws IOException {
+        URL url = new URL(urlString);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
 
         try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
-            String inputLine;
             StringBuilder content = new StringBuilder();
+            String inputLine;
             while ((inputLine = in.readLine()) != null) {
                 content.append(inputLine);
             }
@@ -31,10 +33,16 @@ public class JokeClient {
         }
     }
 
-    private String extractJokeFromJson(String json) throws Exception {
+    public String extractAttribute(String json, String attributeName)
+            throws ParseException, IllegalArgumentException {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject = (JSONObject) parser.parse(json);
-        return (String) jsonObject.get("value");
+
+        Object value = jsonObject.get(attributeName);
+        if (value == null) {
+            throw new IllegalArgumentException("Attribute '" + attributeName + "' not found in JSON response.");
+        }
+        return value.toString();
     }
 
     public static void main(String[] args) {
