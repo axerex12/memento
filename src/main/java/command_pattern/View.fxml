@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="5" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="">
+    <TextArea fx:id="" editable="false" prefHeight="300" wrapText="true"/>
+    <HBox spacing="5">
+        <TextField fx:id="recipientField" promptText="Recipient" prefWidth="150"/>
+        <TextField fx:id="messageField" promptText="Type your message here..." HBox.hgrow="ALWAYS"/>
+        <Button fx:id="sendButton" text="Send"/>
+    </HBox>
+</VBox>
